@@ -66,7 +66,13 @@ const Product = ({ product, onAddToCart }) => {
           
           <div className={`product-actions ${isHovered ? 'show' : ''}`}>
             <button className="action-button details">Voir détails</button>
-            <button className="action-button add-to-cart" onClick={handleAddToCart}>Ajouter au panier</button>
+            <button 
+              className="action-button add-to-cart" 
+              onClick={handleAddToCart}
+              aria-label={`Ajouter ${product.title} au panier`}
+            >
+              Ajouter au panier
+            </button>
           </div>
         </div>
       </div>
