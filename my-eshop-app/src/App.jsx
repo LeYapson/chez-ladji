@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Products from './components/Products';
 import OrderBy from './components/OrderBy';
 import BrandsAvailable from './components/Brandsavailable';
+import HomePage from './components/HomePage';
 import './index.css';
 
 const App = () => {
@@ -11,23 +13,21 @@ const App = () => {
   const [products, setProducts] = useState([]);
   const [brands, setBrands] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
-  const [cartCount, setCartCount] = useState(0); // Pour la simulation du panier
+  const [cartCount, setCartCount] = useState(0);
+  const [currentOrder, setCurrentOrder] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(`https://dummyjson.com/products/category/${category}`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         setProducts(data.products);
         const uniqueBrands = [...new Set(data.products.map(product => product.brand))];
         setBrands(uniqueBrands);
-        setSelectedBrands(uniqueBrands); // Select all brands by default
+        setSelectedBrands(uniqueBrands);
       } catch (error) {
         console.error('Failed to fetch products:', error);
-        // Handle error (e.g., show an error message to the user)
       }
     };
   
@@ -39,6 +39,8 @@ const App = () => {
   };
 
   const handleOrderChange = (order) => {
+    setCurrentOrder(order);
+    
     let sortedProducts = [...products];
     if (order === 'price-asc') {
       sortedProducts.sort((a, b) => a.price - b.price);
@@ -68,29 +70,44 @@ const App = () => {
     setCartCount(cartCount + 1);
   };
 
-  return (
-    <div>
+  const ShopPage = () => (
+    <>
       <Header category={category} onCategoryChange={handleCategoryChange} cartCount={cartCount} />
-      
       <div className="main-layout">
         <aside className="sidebar">
           <div className="sidebar-section">
             <h3>Trier par</h3>
-            <OrderBy onOrderChange={handleOrderChange} />
+            <OrderBy 
+              onOrderChange={handleOrderChange} 
+              currentOrder={currentOrder} 
+            />
           </div>
-          
           <div className="sidebar-section">
-            <BrandsAvailable brands={brands} onBrandChange={handleBrandChange} products={products} />
+            <BrandsAvailable 
+              brands={brands} 
+              onBrandChange={handleBrandChange} 
+              products={products}
+              selectedBrands={selectedBrands}
+            />
           </div>
         </aside>
-        
         <main className="main-content">
           <Products products={filteredProducts} onAddToCart={addToCart} />
         </main>
       </div>
-      
       <Footer />
-    </div>
+    </>
+  );
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage onCategoryChange={handleCategoryChange} />} />
+        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/shop/:categoryId" element={<ShopPage />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   );
 };
 

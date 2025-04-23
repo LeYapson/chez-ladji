@@ -1,12 +1,15 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Logo from '../assets/chez_ladji.png';
 
 const Header = ({ category, onCategoryChange, cartCount = 0 }) => {
   return (
     <header>
       <div className="header-container">
-        <div className="site-logo">
+        <Link to="/" className="site-logo">
+          <img src={Logo} alt="Chez Ladji Logo" className="logo" />
           <h1>Chez Ladji</h1>
-        </div>
+        </Link>
         
         <div className="category-buttons">
           <button onClick={() => onCategoryChange('sunglasses')}>Sunglasses</button>

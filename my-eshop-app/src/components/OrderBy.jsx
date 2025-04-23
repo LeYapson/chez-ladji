@@ -1,16 +1,18 @@
 import React from 'react';
 
-const OrderBy = ({ onOrderChange }) => {
+const OrderBy = ({ onOrderChange, currentOrder }) => {
   return (
-    <div>
-      <label htmlFor="order">Order By:</label>
-      <select id="order" onChange={(e) => onOrderChange(e.target.value)}>
-        <option value="price-asc">Price Ascending</option>
-        <option value="price-desc">Price Descending</option>
-        <option value="rating-asc">Rating Ascending</option>
-        <option value="rating-desc">Rating Descending</option>
-      </select>
-    </div>
+    <select 
+      onChange={(e) => onOrderChange(e.target.value)}
+      value={currentOrder || ''}  // Utiliser la valeur actuelle
+      className="order-select"
+    >
+      <option value="">Trier par...</option>
+      <option value="price-asc">Prix croissant</option>
+      <option value="price-desc">Prix décroissant</option>
+      <option value="rating-asc">Note croissante</option>
+      <option value="rating-desc">Note décroissante</option>
+    </select>
   );
 };
 

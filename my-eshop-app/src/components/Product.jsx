@@ -24,7 +24,7 @@ const Product = ({ product, onAddToCart }) => {
 
   return (
     <div 
-      className="product-card"
+      className="product-card horizontal"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -44,29 +44,31 @@ const Product = ({ product, onAddToCart }) => {
           <h3 className="product-title">{product.title}</h3>
           <p className="product-category">{product.category}</p>
           
-          {/* Utilisation du composant Ratings */}
+          <p className="product-description">{product.description}</p>
+          
           <div className="product-rating">
             <Ratings rating={product.rating} />
             <span className="rating-value">({product.rating})</span>
           </div>
           
-          {/* Ajout du stock disponible */}
           <div className="product-stock">
             {getStockStatus()}
           </div>
         </div>
         
-        <div className="product-price">
-          <span className="price">{discountedPrice} €</span>
-          {product.discountPercentage > 0 && (
-            <span className="original-price">{product.price} €</span>
-          )}
+        <div className="product-price-actions">
+          <div className="product-price">
+            <span className="price">{discountedPrice} €</span>
+            {product.discountPercentage > 0 && (
+              <span className="original-price">{product.price} €</span>
+            )}
+          </div>
+          
+          <div className={`product-actions ${isHovered ? 'show' : ''}`}>
+            <button className="action-button details">Voir détails</button>
+            <button className="action-button add-to-cart" onClick={handleAddToCart}>Ajouter au panier</button>
+          </div>
         </div>
-      </div>
-      
-      <div className={`product-actions ${isHovered ? 'show' : ''}`}>
-        <button className="action-button details">Voir détails</button>
-        <button className="action-button add-to-cart" onClick={handleAddToCart}>Ajouter au panier</button>
       </div>
     </div>
   );
