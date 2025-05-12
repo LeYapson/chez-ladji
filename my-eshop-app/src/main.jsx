@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './assets/pico.min.css';
-import './assets/style.css';
+//import './assets/style.css';
+import './assets/modern-style.css';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

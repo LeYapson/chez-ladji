@@ -4,9 +4,9 @@ const BrandsAvailable = ({ brands, onBrandChange, products, selectedBrands }) =>
   return (
     <>
       <h3>Marques disponibles</h3>
-      <div className="brand-checkboxes">
+      <div className="checkbox-group">
         {brands.map(brand => (
-          <label key={brand}>
+          <label key={brand} className="checkbox-label">
             <input 
               type="checkbox" 
               onChange={() => onBrandChange(brand)} 

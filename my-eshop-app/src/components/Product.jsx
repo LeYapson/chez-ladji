@@ -1,79 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Ratings from './Ratings';
+import { CartContext } from '../contexts/CartContext';
 
-const Product = ({ product, onAddToCart }) => {
+const Product = ({ product }) => {
   const [isHovered, setIsHovered] = useState(false);
-  // Calculer le prix avec remise
   const discountedPrice = (product.price - (product.price * product.discountPercentage / 100)).toFixed(2);
+  const { addToCart } = useContext(CartContext);
   
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    onAddToCart();
+    addToCart(product);
   };
 
   // Déterminer le statut du stock
   const getStockStatus = () => {
     if (product.stock <= 0) {
-      return <span className="stock out">Rupture de stock</span>;
+      return <span className="stock-badge stock-out">Rupture de stock</span>;
     } else if (product.stock <= 10) {
-      return <span className="stock low">Plus que {product.stock} en stock</span>;
+      return <span className="stock-badge stock-low">Plus que {product.stock} en stock</span>;
     } else {
-      return <span className="stock available">En stock</span>;
+      return <span className="stock-badge stock-available">En stock</span>;
     }
   };
 
   return (
     <div 
-      className="product-card horizontal"
+      className="product-card product-horizontal"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="product-image-container">
+      <div className="product-image">
         <img 
           src={isHovered && product.images && product.images.length > 1 ? product.images[1] : product.thumbnail} 
           alt={product.title} 
-          className="product-image"
+          loading="lazy"
         />
         {product.discountPercentage > 0 && (
           <div className="discount-badge">-{Math.round(product.discountPercentage)}%</div>
         )}
       </div>
       
-      <div className="product-info">
-        <div className="product-details">
-          <h3 className="product-title">{product.title}</h3>
-          <p className="product-category">{product.category}</p>
-          
-          <p className="product-description">{product.description}</p>
-          
-          <div className="product-rating">
+      <div className="product-content">
+        <h3 className="product-title">{product.title}</h3>
+        <p className="product-category">{product.category}</p>
+        
+        <p className="product-description">{product.description}</p>
+        
+        <div className="product-meta">
+          <div className="rating-wrapper">
             <Ratings rating={product.rating} />
             <span className="rating-value">({product.rating})</span>
           </div>
           
-          <div className="product-stock">
-            {getStockStatus()}
-          </div>
+          {getStockStatus()}
         </div>
         
-        <div className="product-price-actions">
-          <div className="product-price">
+        <div className="product-footer">
+          <div className="price-wrapper">
             <span className="price">{discountedPrice} €</span>
             {product.discountPercentage > 0 && (
               <span className="original-price">{product.price} €</span>
             )}
           </div>
           
-          <div className={`product-actions ${isHovered ? 'show' : ''}`}>
-            <button className="action-button details">Voir détails</button>
-            <button 
-              className="action-button add-to-cart" 
-              onClick={handleAddToCart}
-              aria-label={`Ajouter ${product.title} au panier`}
-            >
-              Ajouter au panier
-            </button>
-          </div>
+          <button 
+            className="product-button"
+            onClick={handleAddToCart}
+            aria-label={`Ajouter ${product.title} au panier`}
+            disabled={product.stock <= 0}
+          >
+            Ajouter au panier
+          </button>
         </div>
       </div>
     </div>
